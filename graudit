@@ -89,11 +89,14 @@ fi
 # -f specifies the rule file (signature database)
 # -n prints the line number
 
+# Issue 1 - http://github.com/wireghoul/graudit/issues/#issue/1
+# Modified 20091102 - Gary Wilson (gary.wilson the-at-thing of-networks the-dot-thing co the-dot-thing uk)
 grep    --color=$color \
-        --exclude-dir=.svn \
-        --exclude-dir=.cvs \
-        --exclude-dir=.git \
+        --exclude="*\.svn" \
+        --exclude="*\.cvs" \
+        --exclude="*\.git" \
         -n -R -H -C $context -E \
         -f "$database" "$@" \
         | sed -e"s/--/$separator/"
+# End - Issue 1
 exit $?
