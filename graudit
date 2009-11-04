@@ -89,14 +89,35 @@ fi
 # -f specifies the rule file (signature database)
 # -n prints the line number
 
-# Issue 1 - http://github.com/wireghoul/graudit/issues/#issue/1
-# Modified 20091102 - Gary Wilson (gary.wilson the-at-thing of-networks the-dot-thing co the-dot-thing uk)
-grep    --color=$color \
-        --exclude="*\.svn" \
-        --exclude="*\.cvs" \
-        --exclude="*\.git" \
-        -n -R -H -C $context -E \
-        -f "$database" "$@" \
-        | sed -e"s/--/$separator/"
-# End - Issue 1
+################################################################################
+# START - Issue 1 - http://github.com/wireghoul/graudit/issues#issue/1
+# grep version issue
+# Modified 20091104 - Gary Wilson (gary.wilson the-at-thing of-networks the-dot-thing co the-dot-thing uk)
+
+# Check client grep version
+grep --version
+if [ $? != "0" ]; then
+  echo "grep is not installed on this system or resides outside the PATH, please resolve this as graudit needs grep to run."
+  exit 1
+fi
+
+GREP_VERSION=`grep --version | grep "GNU grep" | sed -e "s/grep (GNU grep) //g;s/\.//g"`
+if [ $GREP_VERSION -lt "253" ]; then
+  grep --color=$color \
+       -n -R -H -C $context -E \
+       -f "$database" "$@" \
+      | sed -e"s/--/$separator/"  | grep -v '/\.svn/.*[0-9][-:]\|/.cvs/.*[0-9][-:]\|/.git/.*[0-9][-:]' | sed '/#$/!b;N;/#$/d'
+else
+  grep --color=$color \
+          --exclude-dir=.svn \
+          --exclude-dir=.cvs \
+          --exclude-dir=.git \
+          -n -R -H -C $context -E \
+          -f "$database" "$@" \
+          | sed -e"s/--/$separator/"
+fi
+
+# END - Issue 1
+################################################################################
+
 exit $?
