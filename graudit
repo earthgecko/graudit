@@ -95,12 +95,6 @@ fi
 # Modified 20091104 - Gary Wilson (gary.wilson the-at-thing of-networks the-dot-thing co the-dot-thing uk)
 
 # Check client grep version
-grep --version
-if [ $? != "0" ]; then
-  echo "grep is not installed on this system or resides outside the PATH, please resolve this as graudit needs grep to run."
-  exit 1
-fi
-
 GREP_VERSION=`grep --version | grep "GNU grep" | sed -e "s/grep (GNU grep) //g;s/\.//g"`
 if [ $GREP_VERSION -lt "253" ]; then
   grep --color=$color \
